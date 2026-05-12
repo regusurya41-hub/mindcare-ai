@@ -3,6 +3,8 @@ import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 import authRoutes from './routes/auth.routes.js';
 import chatRoutes from './routes/chat.routes.js';
@@ -59,13 +61,23 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok', service: 'MindCare AI API' });
 });
 
-// Routes
+// API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/moods', moodRoutes);
 app.use('/api/journals', journalRoutes);
 app.use('/api/community', communityRoutes);
 app.use('/api/settings', settingsRoutes);
+
+// Frontend static files
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use(express.static(path.join(__dirname, '../../frontend/dist')));
+
+app.get('*', (_req, res) => {
+  res.sendFile(path.join(__dirname, '../../frontend/dist/index.html'));
+});
 
 // Error handling
 app.use(notFound);
