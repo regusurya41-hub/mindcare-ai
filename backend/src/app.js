@@ -17,25 +17,13 @@ import { errorHandler, notFound } from './middleware/error.middleware.js';
 
 const app = express();
 
-// Allowed origins
-const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
-  .split(',')
-  .map((origin) => origin.trim())
-  .filter(Boolean);
-
 // Security middleware
 app.use(helmet());
 
 // CORS
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
+    origin: true,
     credentials: true
   })
 );
