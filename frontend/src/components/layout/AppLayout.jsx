@@ -14,6 +14,17 @@ const items = [
   { to: '/app/settings', label: 'Settings', icon: Settings }
 ];
 
+const mobileItems = items.filter((item) => ['Dashboard', 'AI Chat', 'Mood', 'Calm Mode', 'Settings'].includes(item.label));
+
+function getSmartGreeting() {
+  const hour = new Date().getHours();
+  if (hour < 5) return { label: 'Late night check-in', message: 'Keep things soft and simple right now.' };
+  if (hour < 12) return { label: 'Good morning', message: 'Start with one kind step toward yourself.' };
+  if (hour < 17) return { label: 'Good afternoon', message: 'Pause, notice, and choose the next gentle move.' };
+  if (hour < 21) return { label: 'Good evening', message: 'Let the day slow down at your pace.' };
+  return { label: 'Night mode', message: 'Hope your evening feels gentle today.' };
+}
+
 function Sidebar({ onNavigate }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -72,12 +83,37 @@ function Sidebar({ onNavigate }) {
   );
 }
 
+function BottomNav() {
+  return (
+    <nav className="fixed inset-x-3 bottom-3 z-40 rounded-3xl border border-white/70 bg-white/75 p-2 shadow-glow backdrop-blur-2xl dark:border-white/10 dark:bg-slate-950/70 lg:hidden">
+      <div className="grid grid-cols-5 gap-1">
+        {mobileItems.map(({ to, label, icon: Icon }) => (
+          <NavLink
+            key={to}
+            to={to}
+            end={to === '/app'}
+            className={({ isActive }) =>
+              `flex min-w-0 flex-col items-center justify-center gap-1 rounded-2xl px-2 py-2 text-[11px] font-bold transition-all duration-300 ${
+                isActive ? 'bg-gradient-to-r from-indigo to-violet text-white shadow-lg shadow-indigo/20' : 'text-slate-500 dark:text-slate-300'
+              }`
+            }
+          >
+            <Icon size={18} />
+            <span className="truncate">{label === 'Calm Mode' ? 'Calm' : label.replace('AI ', '')}</span>
+          </NavLink>
+        ))}
+      </div>
+    </nav>
+  );
+}
+
 export default function AppLayout() {
   const [open, setOpen] = useState(false);
   const { dark, toggleDark } = useTheme();
+  const greeting = getSmartGreeting();
 
   return (
-    <div className="relative min-h-screen p-3 text-ink dark:text-white lg:p-5">
+    <div className="relative min-h-screen p-3 pb-24 text-ink dark:text-white lg:p-5">
       <div className="ambient-layer">
         <div className="ambient-orb left-[-7rem] top-24 h-72 w-72 animate-float bg-violet/20 dark:bg-violet/15" />
         <div className="ambient-orb right-[-8rem] top-10 h-80 w-80 animate-slow-pulse bg-lagoon/20 dark:bg-lagoon/10" />
@@ -103,8 +139,8 @@ export default function AppLayout() {
               <Menu size={20} />
             </button>
             <div>
-              <p className="text-sm font-semibold text-indigo dark:text-indigo-200">Today's check-in</p>
-              <h1 className="text-lg font-extrabold leading-tight sm:text-xl">Make one kind move toward yourself.</h1>
+              <p className="text-sm font-semibold text-indigo dark:text-indigo-200">{greeting.label}</p>
+              <h1 className="text-lg font-extrabold leading-tight tracking-tight sm:text-xl">{greeting.message}</h1>
             </div>
             <button className="rounded-2xl bg-white/80 p-3 transition hover:scale-105 dark:bg-white/10" onClick={toggleDark} aria-label="Toggle dark mode">
               <Moon size={18} className={dark ? 'fill-white' : ''} />
@@ -113,6 +149,7 @@ export default function AppLayout() {
           <Outlet />
         </main>
       </div>
+      <BottomNav />
     </div>
   );
 }
