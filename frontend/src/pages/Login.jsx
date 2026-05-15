@@ -30,7 +30,7 @@ export default function Login() {
     <div className="grid min-h-screen place-items-center px-5 text-ink dark:text-white">
       <form onSubmit={submit} className="glass w-full max-w-md rounded-[32px] p-6">
         <Link to="/" className="mb-8 flex items-center gap-3 font-extrabold">
-          <span className="grid h-11 w-11 place-items-center rounded-2xl bg-lagoon text-white"><HeartPulse size={20} /></span>
+          <span className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-indigo to-violet text-white shadow-lg shadow-indigo/20"><HeartPulse size={20} /></span>
           MindCare AI
         </Link>
         <h1 className="text-3xl font-extrabold">Welcome back</h1>
@@ -46,7 +46,7 @@ export default function Login() {
         </div>
         {error && <p className="mt-4 rounded-2xl bg-coral/15 px-4 py-3 text-sm font-semibold text-red-700 dark:text-red-200">{error}</p>}
         <button className="btn-primary mt-6 w-full" disabled={loading}>{loading ? 'Signing in...' : 'Login'}</button>
-        <p className="mt-5 text-center text-sm text-slate-600 dark:text-slate-300">New here? <Link className="font-bold text-lagoon dark:text-teal-200" to="/signup">Create an account</Link></p>
+        <p className="mt-5 text-center text-sm text-slate-600 dark:text-slate-300">New here? <Link className="font-bold text-indigo dark:text-indigo-200" to="/signup">Create an account</Link></p>
       </form>
     </div>
   );

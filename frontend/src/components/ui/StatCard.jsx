@@ -7,7 +7,7 @@ export default function StatCard({ label, value, hint, icon: Icon }) {
           <p className="mt-2 text-3xl font-extrabold">{value}</p>
         </div>
         {Icon && (
-          <div className="grid h-12 w-12 place-items-center rounded-2xl bg-mist text-lagoon dark:bg-white/10 dark:text-teal-200">
+          <div className="grid h-12 w-12 place-items-center rounded-2xl bg-lavender text-indigo dark:bg-white/10 dark:text-indigo-200">
             <Icon size={22} />
           </div>
         )}

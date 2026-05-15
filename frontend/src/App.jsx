@@ -10,6 +10,7 @@ import MoodTracker from './pages/MoodTracker.jsx';
 import Journal from './pages/Journal.jsx';
 import Community from './pages/Community.jsx';
 import Settings from './pages/Settings.jsx';
+import CalmMode from './pages/CalmMode.jsx';
 
 function Protected({ children }) {
   const { user } = useAuth();
@@ -34,6 +35,7 @@ export default function App() {
         <Route path="chat" element={<Chat />} />
         <Route path="moods" element={<MoodTracker />} />
         <Route path="journal" element={<Journal />} />
+        <Route path="calm" element={<CalmMode />} />
         <Route path="community" element={<Community />} />
         <Route path="settings" element={<Settings />} />
       </Route>

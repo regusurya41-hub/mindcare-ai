@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { Bot, Brain, HeartHandshake, Mic, Send, ShieldCheck, Sparkles, Wand2 } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { api } from '../api/client.js';
 
 const personalities = [
@@ -15,6 +15,13 @@ const messageVariants = {
   exit: { opacity: 0, y: -8, scale: 0.98 }
 };
 
+const quickPrompts = [
+  'I feel anxious and need grounding.',
+  'Help me reflect on my day.',
+  'Give me a gentle motivation boost.',
+  'I need a two-minute calming exercise.'
+];
+
 export default function Chat() {
   const [personality, setPersonality] = useState('friend');
   const [messages, setMessages] = useState([
@@ -23,7 +30,19 @@ export default function Chat() {
   const [input, setInput] = useState('');
   const [typing, setTyping] = useState(false);
   const [resources, setResources] = useState([]);
+  const [emotion, setEmotion] = useState(null);
+  const [listening, setListening] = useState(false);
+  const [provider, setProvider] = useState('local');
   const bottomRef = useRef(null);
+  const recognition = useMemo(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return null;
+    const instance = new SpeechRecognition();
+    instance.continuous = false;
+    instance.interimResults = false;
+    instance.lang = 'en-US';
+    return instance;
+  }, []);
 
   useEffect(() => {
     api
@@ -51,6 +70,8 @@ export default function Chat() {
         { role: 'assistant', content: data.reply, isCrisis: data.isCrisis, createdAt: new Date().toISOString() }
       ]);
       setResources(data.resources || []);
+      setEmotion(data.emotion || null);
+      setProvider(data.provider || 'local');
     } catch (_error) {
       setMessages((current) => [
         ...current,
@@ -65,30 +86,42 @@ export default function Chat() {
     }
   }
 
+  function startVoiceInput() {
+    if (!recognition || listening) return;
+    setListening(true);
+    recognition.onresult = (event) => {
+      const transcript = event.results?.[0]?.[0]?.transcript;
+      if (transcript) setInput((current) => `${current} ${transcript}`.trim());
+    };
+    recognition.onend = () => setListening(false);
+    recognition.onerror = () => setListening(false);
+    recognition.start();
+  }
+
   const activePersonality = personalities.find((item) => item.id === personality) || personalities[0];
 
   return (
     <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
       <section className="overflow-hidden rounded-[32px] border border-white/70 bg-white/75 shadow-glow backdrop-blur-2xl dark:border-white/10 dark:bg-slate-950/50">
-        <div className="border-b border-teal-900/10 bg-gradient-to-r from-white/95 via-mist/80 to-teal-50/80 p-4 dark:border-white/10 dark:from-white/10 dark:via-teal-950/30 dark:to-slate-950/40 sm:p-5">
+        <div className="border-b border-indigo/10 bg-gradient-to-r from-white/95 via-lavender/70 to-teal-50/80 p-4 dark:border-white/10 dark:from-white/10 dark:via-violet/10 dark:to-teal-950/20 sm:p-5">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="flex items-center gap-3">
               <motion.div
                 animate={{ rotate: [0, -4, 4, 0], scale: [1, 1.04, 1] }}
                 transition={{ duration: 4, repeat: Infinity, repeatDelay: 2 }}
-                className="grid h-12 w-12 place-items-center rounded-2xl bg-lagoon text-white shadow-lg shadow-teal-800/20"
+                className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-indigo to-violet text-white shadow-lg shadow-indigo/20"
               >
                 <Bot size={23} />
               </motion.div>
               <div>
-                <p className="text-sm font-bold text-lagoon dark:text-teal-200">AI companion</p>
+                <p className="text-sm font-bold text-indigo dark:text-indigo-200">AI companion</p>
                 <h2 className="text-2xl font-extrabold">Anonymous support chat</h2>
                 <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">{activePersonality.tone} mode is active.</p>
               </div>
             </div>
-            <div className="flex items-center gap-2 rounded-full border border-teal-900/10 bg-white/80 px-3 py-2 text-xs font-bold text-lagoon shadow-sm dark:border-white/10 dark:bg-white/10 dark:text-teal-200">
+            <div className="flex items-center gap-2 rounded-full border border-indigo/10 bg-white/80 px-3 py-2 text-xs font-bold text-indigo shadow-sm dark:border-white/10 dark:bg-white/10 dark:text-indigo-200">
               <ShieldCheck size={15} />
-              Private session
+              {provider === 'openai' ? 'OpenAI active' : provider === 'crisis-safety' ? 'Safety mode' : 'Smart fallback'}
             </div>
           </div>
 
@@ -100,7 +133,7 @@ export default function Chat() {
                   key={item.id}
                   className={`flex items-center justify-center gap-2 rounded-[20px] px-3 py-3 text-xs font-extrabold transition ${
                     personality === item.id
-                      ? 'bg-lagoon text-white shadow-lg shadow-teal-900/15'
+                      ? 'bg-gradient-to-r from-indigo to-violet text-white shadow-lg shadow-indigo/20'
                       : 'text-slate-600 hover:bg-white dark:text-slate-300 dark:hover:bg-white/10'
                   }`}
                   onClick={() => setPersonality(item.id)}
@@ -183,9 +216,25 @@ export default function Chat() {
             </div>
           </div>
 
-          <div className="border-t border-teal-900/10 bg-white/65 p-3 backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/40 sm:p-4">
-            <div className="flex items-end gap-3 rounded-[28px] border border-teal-900/10 bg-white/90 p-2 shadow-sm dark:border-white/10 dark:bg-white/10">
-              <button className="rounded-full bg-mist p-3 text-lagoon transition hover:bg-teal-50 dark:bg-white/10 dark:text-teal-200 dark:hover:bg-white/15" aria-label="Voice input">
+          <div className="border-t border-indigo/10 bg-white/65 p-3 backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/40 sm:p-4">
+            <div className="mb-3 flex gap-2 overflow-x-auto pb-1">
+              {quickPrompts.map((prompt) => (
+                <button
+                  key={prompt}
+                  className="shrink-0 rounded-full border border-indigo/10 bg-white/70 px-3 py-2 text-xs font-bold text-slate-600 transition hover:bg-white hover:text-indigo dark:border-white/10 dark:bg-white/10 dark:text-slate-300"
+                  onClick={() => setInput(prompt)}
+                >
+                  {prompt}
+                </button>
+              ))}
+            </div>
+            <div className="flex items-end gap-3 rounded-[28px] border border-indigo/10 bg-white/90 p-2 shadow-sm dark:border-white/10 dark:bg-white/10">
+              <button
+                className={`rounded-full p-3 transition hover:scale-105 dark:bg-white/10 ${listening ? 'bg-indigo text-white' : 'bg-mist text-indigo dark:text-indigo-200'}`}
+                aria-label="Voice input"
+                onClick={startVoiceInput}
+                type="button"
+              >
                 <Mic size={18} />
               </button>
               <textarea
@@ -217,6 +266,15 @@ export default function Chat() {
             MindCare AI offers emotional support and coping ideas. It does not diagnose, prescribe, or replace professional care.
           </p>
         </div>
+
+        {emotion && (
+          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="panel bg-gradient-to-br from-white/90 to-teal-50/80 dark:from-white/10 dark:to-teal-950/30">
+            <Sparkles className="text-lagoon dark:text-teal-200" />
+            <h3 className="mt-4 text-xl font-extrabold">Emotion signal</h3>
+            <p className="mt-2 text-sm font-bold text-lagoon dark:text-teal-200">{emotion.label}</p>
+            <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">{emotion.suggestion}</p>
+          </motion.div>
+        )}
 
         {resources.length > 0 && (
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="panel border-red-200 bg-red-50/90 dark:border-red-900/50 dark:bg-red-950/25">

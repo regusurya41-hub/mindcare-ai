@@ -6,48 +6,63 @@
 :root {
   color-scheme: light;
   background:
-    radial-gradient(circle at 15% 10%, rgba(239, 141, 123, 0.2), transparent 32%),
-    radial-gradient(circle at 90% 0%, rgba(122, 168, 157, 0.28), transparent 30%),
-    #f7fbf9;
+    radial-gradient(circle at 12% 12%, rgba(139, 92, 246, 0.18), transparent 30%),
+    radial-gradient(circle at 88% 8%, rgba(20, 184, 166, 0.18), transparent 28%),
+    radial-gradient(circle at 60% 90%, rgba(99, 102, 241, 0.12), transparent 32%),
+    #f8fafc;
 }
 
 .dark {
   color-scheme: dark;
   background:
-    radial-gradient(circle at 20% 10%, rgba(239, 141, 123, 0.12), transparent 32%),
-    radial-gradient(circle at 90% 0%, rgba(20, 184, 166, 0.16), transparent 30%),
-    #101827;
+    radial-gradient(circle at 18% 12%, rgba(139, 92, 246, 0.18), transparent 32%),
+    radial-gradient(circle at 85% 10%, rgba(20, 184, 166, 0.13), transparent 30%),
+    radial-gradient(circle at 50% 95%, rgba(99, 102, 241, 0.14), transparent 34%),
+    #0f172a;
 }
 
 body {
   margin: 0;
   min-width: 320px;
   background: transparent;
-  color: #17202a;
+  color: #111827;
 }
 
 .dark body {
-  color: #eaf3f0;
+  color: #f8fafc;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(99, 102, 241, 0.35) transparent;
 }
 
 @layer components {
+  .ambient-layer {
+    @apply pointer-events-none fixed inset-0 -z-10 overflow-hidden;
+  }
+
+  .ambient-orb {
+    @apply absolute rounded-full blur-3xl;
+  }
+
   .glass {
-    @apply border border-white/60 bg-white/70 shadow-glow backdrop-blur-xl dark:border-white/10 dark:bg-white/10;
+    @apply border border-white/70 bg-white/70 shadow-glow backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.08];
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full bg-lagoon px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-teal-800/15 transition hover:bg-teal-700 focus:outline-none focus:ring-4 focus:ring-teal-200 disabled:cursor-not-allowed disabled:opacity-60 dark:focus:ring-teal-900/40;
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-indigo to-violet px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo/20 transition-all duration-300 hover:scale-[1.03] hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-indigo/20 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full border border-teal-900/10 bg-white/70 px-5 py-3 text-sm font-semibold text-ink transition hover:bg-white dark:border-white/10 dark:bg-white/10 dark:text-white dark:hover:bg-white/15;
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl border border-indigo/10 bg-white/75 px-5 py-3 text-sm font-semibold text-ink shadow-sm transition-all duration-300 hover:scale-[1.02] hover:bg-white dark:border-white/10 dark:bg-white/[0.08] dark:text-white dark:hover:bg-white/[0.13];
   }
 
   .field {
-    @apply w-full rounded-2xl border border-teal-900/10 bg-white/80 px-4 py-3 text-sm outline-none transition focus:border-lagoon focus:ring-4 focus:ring-teal-100 dark:border-white/10 dark:bg-white/10 dark:text-white dark:focus:ring-teal-900/30;
+    @apply w-full rounded-2xl border border-indigo/10 bg-white/80 px-4 py-3 text-sm outline-none transition focus:border-indigo focus:ring-4 focus:ring-indigo/15 dark:border-white/10 dark:bg-white/[0.08] dark:text-white dark:focus:ring-indigo/25;
   }
 
   .panel {
-    @apply rounded-[28px] border border-teal-900/10 bg-white/80 p-5 shadow-sm dark:border-white/10 dark:bg-white/10;
+    @apply rounded-3xl border border-white/70 bg-white/75 p-5 shadow-soft backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.08];
   }
 }

@@ -8,13 +8,13 @@ function ToggleRow({ icon: Icon, title, text, checked, onChange }) {
   return (
     <div className="flex items-center justify-between gap-4 rounded-[24px] bg-mist p-4 dark:bg-white/10">
       <div className="flex items-center gap-3">
-        <div className="grid h-11 w-11 place-items-center rounded-2xl bg-white text-lagoon dark:bg-white/10 dark:text-teal-200"><Icon size={19} /></div>
+        <div className="grid h-11 w-11 place-items-center rounded-2xl bg-white text-indigo dark:bg-white/10 dark:text-indigo-200"><Icon size={19} /></div>
         <div>
           <p className="font-extrabold">{title}</p>
           <p className="text-sm text-slate-600 dark:text-slate-300">{text}</p>
         </div>
       </div>
-      <button className={`h-7 w-12 rounded-full p-1 transition ${checked ? 'bg-lagoon' : 'bg-slate-300'}`} onClick={onChange} aria-label={title}>
+      <button className={`h-7 w-12 rounded-full p-1 transition ${checked ? 'bg-indigo' : 'bg-slate-300'}`} onClick={onChange} aria-label={title}>
         <span className={`block h-5 w-5 rounded-full bg-white transition ${checked ? 'translate-x-5' : ''}`} />
       </button>
     </div>
@@ -44,7 +44,7 @@ export default function Settings() {
 
   return (
     <div className="panel max-w-4xl">
-      <p className="text-sm font-bold text-lagoon dark:text-teal-200">Settings</p>
+      <p className="text-sm font-bold text-indigo dark:text-indigo-200">Settings</p>
       <h2 className="text-2xl font-extrabold">Privacy and preferences</h2>
       <div className="mt-6 grid gap-4">
         <ToggleRow icon={Moon} title="Dark mode" text="Use a lower-light interface." checked={dark} onChange={toggleSavedDarkMode} />
