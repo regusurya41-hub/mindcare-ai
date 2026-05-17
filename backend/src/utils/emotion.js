@@ -26,11 +26,7 @@ export function detectEmotion(text = '') {
   const match = emotionRules.find((rule) => rule.terms.some((term) => normalized.includes(term)));
 
   if (!match) {
-    return {
-      emotion: 'reflective',
-      label: 'Reflective',
-      suggestion: 'Try naming the feeling, the need underneath it, and one small next step.'
-    };
+    return null;
   }
 
   const suggestions = {

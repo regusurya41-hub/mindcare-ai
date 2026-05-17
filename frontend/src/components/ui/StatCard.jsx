@@ -1,18 +1,30 @@
-export default function StatCard({ label, value, hint, icon: Icon }) {
+export default function StatCard({
+  icon: Icon,
+  label,
+  value,
+  hint
+}) {
   return (
     <div className="panel">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-semibold text-slate-500 dark:text-slate-300">{label}</p>
-          <p className="mt-2 text-3xl font-extrabold">{value}</p>
+          <p className="text-sm font-semibold text-slate-500 dark:text-slate-300">
+            {label}
+          </p>
+
+          <h3 className="mt-2 text-3xl font-extrabold">
+            {value}
+          </h3>
         </div>
-        {Icon && (
-          <div className="grid h-12 w-12 place-items-center rounded-2xl bg-lavender text-indigo dark:bg-white/10 dark:text-indigo-200">
-            <Icon size={22} />
-          </div>
-        )}
+
+        <div className="rounded-2xl bg-gradient-to-br from-indigo to-violet p-3 text-white shadow-lg shadow-indigo/20">
+          <Icon size={22} />
+        </div>
       </div>
-      {hint && <p className="mt-3 text-sm text-slate-500 dark:text-slate-300">{hint}</p>}
+
+      <p className="mt-4 text-sm text-slate-500 dark:text-slate-300">
+        {hint}
+      </p>
     </div>
   );
 }

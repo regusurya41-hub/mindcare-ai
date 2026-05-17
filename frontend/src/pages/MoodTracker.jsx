@@ -4,6 +4,7 @@ import { Brain, Sparkles } from 'lucide-react';
 import { api } from '../api/client.js';
 import { fallbackMoods } from '../data/demo.js';
 import AnimatedPage from '../components/ui/AnimatedPage.jsx';
+import LoadingSpinner from '../components/ui/LoadingSpinner.jsx';
 import WellnessCard from '../components/ui/WellnessCard.jsx';
 
 const moods = [
@@ -65,7 +66,7 @@ export default function MoodTracker() {
           </div>
           <p className="mt-5 text-sm font-semibold text-slate-600 dark:text-slate-300">{selected.prompt}</p>
           <textarea className="field mt-3 min-h-32" placeholder="Add a short note..." value={note} onChange={(e) => setNote(e.target.value)} />
-          <button className="btn-primary mt-4 w-full" onClick={logMood} disabled={saving}>{saving ? 'Saving...' : 'Log mood'}</button>
+          <button className="btn-primary mt-4 w-full" onClick={logMood} disabled={saving}>{saving ? <LoadingSpinner label="Saving..." /> : 'Log mood'}</button>
         </WellnessCard>
 
         <WellnessCard className="bg-gradient-to-br from-white/90 to-teal-50/80 dark:from-white/10 dark:to-teal-950/30">
