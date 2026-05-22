@@ -200,132 +200,212 @@ export default function Chat() {
   }
 
   async function send() {
-    if (!input.trim() || typing || sending) return;
+  if (!input.trim() || typing || sending) return;
 
-    if (!isOnline) {
-      setMessages((current) => [
-        ...current,
-        {
-          role: 'assistant',
-          content: 'Internet connection lost. Please reconnect and try again.',
-          createdAt: new Date().toISOString()
-        }
-      ]);
-      return;
+  if (!isOnline) {
+    setMessages((current) => [
+      ...current,
+      {
+        role: 'assistant',
+        content:
+          '⚠️ Internet connection lost. Please reconnect and try again.',
+        createdAt: new Date().toISOString()
+      }
+    ]);
+    return;
+  }
+
+  const content = input.trim();
+  const lower = content.toLowerCase();
+
+  setInput('');
+  setCharCount(0);
+
+  setMessages((current) => [
+    ...current,
+    {
+      role: 'user',
+      content,
+      createdAt: new Date().toISOString()
     }
+  ]);
 
-    const content = input.trim();
+  setTyping(true);
+  setSending(true);
 
-    const lower = content.toLowerCase();
-
-    const repeatedGreetings = ['hi', 'hello', 'hey', 'hii'];
-
-    const lastAssistant =
-      messages.filter((m) => m.role === 'assistant').slice(-1)[0]?.content || '';
-
+  try {
     let smartReply = null;
+    let detectedMode = 'casual';
 
-    if (repeatedGreetings.includes(lower)) {
-      const greetingReplies = [
-        'Hey 👋 How are you feeling today?',
-        'Hi there 💜 What is on your mind?',
-        'Hello ✨ Hope your day is going gently.',
-        'Hey 😊 Want to talk or just chill?'
-      ];
-
-      smartReply =
-        greetingReplies[Math.floor(Math.random() * greetingReplies.length)];
-    }
-
-    if (lower.includes('good') && lastAssistant.includes('How')) {
+    // Greetings
+    if (
+      ['hi', 'hello', 'hey', 'hii', 'yo'].includes(lower)
+    ) {
       const replies = [
-        'That is nice to hear 🌸 What made today better?',
-        'Good to know 💜 Keep taking things one step at a time.',
-        'I am glad you are feeling okay ✨',
-        'That sounds positive 😊'
+        'Hey 👋 How has your day been so far?',
+        'Hello 🌸 What is on your mind today?',
+        'Hi 💜 Feeling okay today?',
+        'Hey 😊 Want to talk about something or just chill?'
       ];
 
       smartReply =
         replies[Math.floor(Math.random() * replies.length)];
     }
 
-    setInput('');
-    setCharCount(0);
+    // Sad emotions
+    else if (
+      lower.includes('sad') ||
+      lower.includes('depressed') ||
+      lower.includes('lonely') ||
+      lower.includes('cry') ||
+      lower.includes('hurt')
+    ) {
+      detectedMode = 'deep-support';
+
+      const replies = [
+        'I am really sorry you are feeling this way 💜 What has been hurting you the most lately?',
+        'That sounds emotionally exhausting 🌧️ Want to talk more about what happened?',
+        'You do not need to handle everything alone 🤍 What has been on your mind recently?'
+      ];
+
+      smartReply =
+        replies[Math.floor(Math.random() * replies.length)];
+    }
+
+    // Anxiety / stress
+    else if (
+      lower.includes('stress') ||
+      lower.includes('anxious') ||
+      lower.includes('panic') ||
+      lower.includes('overthinking') ||
+      lower.includes('worried')
+    ) {
+      detectedMode = 'support';
+
+      const replies = [
+        'Overthinking can drain your energy 🫂 What thoughts keep repeating in your mind?',
+        'Take one slow breath 🌿 What is making you feel stressed right now?',
+        'You are safe here 💙 What has been worrying you the most today?'
+      ];
+
+      smartReply =
+        replies[Math.floor(Math.random() * replies.length)];
+    }
+
+    // Motivation
+    else if (
+      lower.includes('study') ||
+      lower.includes('motivation') ||
+      lower.includes('lazy') ||
+      lower.includes('focus')
+    ) {
+      detectedMode = 'motivation';
+
+      const replies = [
+        'You do not need perfect motivation to begin ✨ What small task can you finish right now?',
+        'Progress matters more than perfection 🚀 What are you trying to focus on?',
+        'Some days feel mentally heavier 🌱 Want help making a simple study routine?'
+      ];
+
+      smartReply =
+        replies[Math.floor(Math.random() * replies.length)];
+    }
+
+    // Happy mood
+    else if (
+      lower.includes('happy') ||
+      lower.includes('good') ||
+      lower.includes('great') ||
+      lower.includes('better') ||
+      lower.includes('excited')
+    ) {
+      detectedMode = 'positive';
+
+      const replies = [
+        'That is wonderful 🌸 What made today feel better?',
+        'I am happy to hear that 😊 Want to share the best part of your day?',
+        'That positive energy matters ✨ What changed recently?'
+      ];
+
+      smartReply =
+        replies[Math.floor(Math.random() * replies.length)];
+    }
+
+    // Anger
+    else if (
+      lower.includes('angry') ||
+      lower.includes('mad') ||
+      lower.includes('frustrated') ||
+      lower.includes('annoyed')
+    ) {
+      detectedMode = 'support';
+
+      const replies = [
+        'That sounds frustrating 😔 What happened?',
+        'Anger usually hides stress or hurt underneath 💭 Want to talk about it?',
+        'I understand 🌧️ What is bothering you the most right now?'
+      ];
+
+      smartReply =
+        replies[Math.floor(Math.random() * replies.length)];
+    }
+
+    // Casual fallback
+    else {
+      const casualReplies = [
+        'Hmm 🤔 Tell me more about that.',
+        'That sounds interesting ✨',
+        'I am listening 👀',
+        'How does that make you feel?',
+        'Want to go deeper into that topic?'
+      ];
+
+      smartReply =
+        casualReplies[
+          Math.floor(Math.random() * casualReplies.length)
+        ];
+    }
+
+    // Smart local reply
+    setTimeout(() => {
+      const assistantMessage = {
+        role: 'assistant',
+        content: smartReply,
+        createdAt: new Date().toISOString()
+      };
+
+      setMessages((current) => [
+        ...current,
+        assistantMessage
+      ]);
+
+      setMode(detectedMode);
+
+      speakReply(smartReply, detectedMode);
+
+      setTyping(false);
+      setSending(false);
+    }, 800);
+
+  } catch (_error) {
+    const fallback =
+      'Something went wrong 🌐 Please try again in a moment.';
 
     setMessages((current) => [
       ...current,
       {
-        role: 'user',
-        content,
+        role: 'assistant',
+        content: fallback,
         createdAt: new Date().toISOString()
       }
     ]);
 
-    setTyping(true);
-    setSending(true);
+    speakReply(fallback, 'support');
 
-    try {
-      if (smartReply) {
-        setTimeout(() => {
-          setMessages((current) => [
-            ...current,
-            {
-              role: 'assistant',
-              content: smartReply,
-              createdAt: new Date().toISOString()
-            }
-          ]);
-
-          speakReply(smartReply, 'casual');
-
-          setTyping(false);
-          setSending(false);
-        }, 700);
-
-        return;
-      }
-
-      const { data } = await api.post('/chat', {
-        message: content,
-        personality,
-        language
-      });
-
-      const assistantMessage = {
-        role: 'assistant',
-        content: data.reply,
-        isCrisis: data.isCrisis,
-        createdAt: new Date().toISOString()
-      };
-
-      setMessages((current) => [...current, assistantMessage]);
-
-      setResources(data.resources || []);
-      setEmotion(data.emotion || null);
-      setProvider(data.provider || 'local');
-      setMode(data.mode || 'casual');
-      setMemory(data.memory || null);
-
-      speakReply(data.reply, data.mode || 'casual');
-    } catch (_error) {
-      const fallback =
-        'I had trouble connecting. Please try again in a moment.';
-
-      setMessages((current) => [
-        ...current,
-        {
-          role: 'assistant',
-          content: fallback,
-          createdAt: new Date().toISOString()
-        }
-      ]);
-
-      speakReply(fallback, 'support');
-    } finally {
-      setTyping(false);
-      setSending(false);
-    }
+    setTyping(false);
+    setSending(false);
   }
+}
 
   function startVoiceInput() {
     const SpeechRecognition =

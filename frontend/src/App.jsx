@@ -28,6 +28,7 @@ function PageLoader() {
       {/* Background glow */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute left-[-120px] top-[-120px] h-72 w-72 rounded-full bg-violet-500/20 blur-3xl" />
+
         <div className="absolute bottom-[-120px] right-[-120px] h-72 w-72 rounded-full bg-cyan-400/20 blur-3xl" />
       </div>
 
@@ -72,7 +73,7 @@ function Protected({ children }) {
 
 function AnimatedPage({ children }) {
   return (
-    <motion.div
+    <motion.main
       initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -12 }}
@@ -83,7 +84,7 @@ function AnimatedPage({ children }) {
       className="min-h-screen"
     >
       {children}
-    </motion.div>
+    </motion.main>
   );
 }
 

@@ -1,12 +1,15 @@
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, HeartPulse } from 'lucide-react';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext.jsx';
+
 import LoadingSpinner from '../components/ui/LoadingSpinner.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
 
 export default function Login() {
   const [show, setShow] = useState(false);
+
   const [form, setForm] = useState({
     email: '',
     password: ''
@@ -23,20 +26,36 @@ export default function Login() {
 
     setError('');
 
-    if (!form.email.includes('@') || !form.password.trim()) {
-      return setError('Enter a valid email and password.');
+    if (
+      !form.email.includes('@') ||
+      !form.password.trim()
+    ) {
+      const message =
+        'Enter a valid email and password.';
+
+      setError(message);
+
+      toast.error(message);
+
+      return;
     }
 
     setLoading(true);
 
     try {
       await login(form);
+
+      toast.success('Welcome back!');
+
       navigate('/app');
     } catch (err) {
-      setError(
+      const message =
         err.response?.data?.message ||
-          'Unable to log in.'
-      );
+        'Unable to log in.';
+
+      setError(message);
+
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -48,7 +67,9 @@ export default function Login() {
       {/* Background */}
       <div className="ambient-layer">
         <div className="ambient-orb left-[-8rem] top-10 h-80 w-80 animate-float bg-violet/20 dark:bg-violet/10" />
+
         <div className="ambient-orb right-[-6rem] top-20 h-72 w-72 animate-slow-pulse bg-lagoon/20 dark:bg-lagoon/10" />
+
         <div className="ambient-orb bottom-[-8rem] left-1/3 h-96 w-96 animate-float bg-indigo/15 dark:bg-indigo/10" />
       </div>
 
@@ -59,6 +80,7 @@ export default function Login() {
         transition={{ duration: 0.45 }}
         className="glass relative z-10 w-full max-w-md rounded-[34px] p-6 sm:p-8"
       >
+
         {/* Logo */}
         <Link
           to="/"
@@ -72,6 +94,7 @@ export default function Login() {
             <p className="text-lg font-extrabold">
               MindCare AI
             </p>
+
             <p className="text-xs font-medium text-slate-500 dark:text-slate-300">
               Emotional wellness space
             </p>

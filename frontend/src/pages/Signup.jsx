@@ -1,9 +1,11 @@
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, HeartPulse } from 'lucide-react';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext.jsx';
+
 import LoadingSpinner from '../components/ui/LoadingSpinner.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
 
 export default function Signup() {
   const [show, setShow] = useState(false);
@@ -32,21 +34,34 @@ export default function Signup() {
       !/[A-Za-z]/.test(form.password) ||
       !/[0-9]/.test(form.password)
     ) {
-      return setError(
-        'Use your name, a valid email, and a password with at least 8 characters, one letter, and one number.'
-      );
+      const message =
+        'Use your name, a valid email, and a password with at least 8 characters, one letter, and one number.';
+
+      setError(message);
+
+      toast.error(message);
+
+      return;
     }
 
     setLoading(true);
 
     try {
       await signup(form);
+
+      toast.success(
+        'Account created successfully!'
+      );
+
       navigate('/app');
     } catch (err) {
-      setError(
+      const message =
         err.response?.data?.message ||
-          'Unable to create account.'
-      );
+        'Unable to create account.';
+
+      setError(message);
+
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -58,7 +73,9 @@ export default function Signup() {
       {/* Background */}
       <div className="ambient-layer">
         <div className="ambient-orb left-[-9rem] top-16 h-80 w-80 animate-float bg-violet/20 dark:bg-violet/10" />
+
         <div className="ambient-orb right-[-7rem] top-24 h-72 w-72 animate-slow-pulse bg-lagoon/20 dark:bg-lagoon/10" />
+
         <div className="ambient-orb bottom-[-8rem] left-1/3 h-96 w-96 animate-float bg-indigo/15 dark:bg-indigo/10" />
       </div>
 
