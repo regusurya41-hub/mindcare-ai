@@ -4,8 +4,6 @@ import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
 import authRoutes from './routes/auth.routes.js';
 import chatRoutes from './routes/chat.routes.js';
@@ -31,7 +29,7 @@ app.use(helmet());
 // Compression
 app.use(compression());
 
-// FIXED CORS
+// CORS
 app.use(
   cors({
     origin: [
@@ -44,6 +42,7 @@ app.use(
 
 // Body parser
 app.use(express.json({ limit: '1mb' }));
+
 app.use(
   express.urlencoded({ extended: true })
 );
@@ -83,35 +82,6 @@ app.use('/api/journals', journalRoutes);
 app.use('/api/community', communityRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/memory', memoryRoutes);
-
-// Serve frontend
-if (process.env.NODE_ENV === 'production') {
-  const __filename = fileURLToPath(
-    import.meta.url
-  );
-
-  const __dirname = path.dirname(
-    __filename
-  );
-
-  app.use(
-    express.static(
-      path.join(
-        __dirname,
-        '../../frontend/dist'
-      )
-    )
-  );
-
-  app.get('*', (_req, res) => {
-    res.sendFile(
-      path.join(
-        __dirname,
-        '../../frontend/dist/index.html'
-      )
-    );
-  });
-}
 
 // Error handlers
 app.use(notFound);
