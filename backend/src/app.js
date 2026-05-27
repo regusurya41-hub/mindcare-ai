@@ -29,14 +29,17 @@ app.use(helmet());
 // Compression
 app.use(compression());
 
-// CORS
+// CORS FIX
 app.use(
   cors({
     origin: [
       'http://localhost:5173',
+      'https://mindcare-ai-819fd.web.app',
       'https://mindcare-ai-frontend.vercel.app'
     ],
-    credentials: true
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
   })
 );
 
@@ -44,7 +47,9 @@ app.use(
 app.use(express.json({ limit: '1mb' }));
 
 app.use(
-  express.urlencoded({ extended: true })
+  express.urlencoded({
+    extended: true
+  })
 );
 
 // Logger
