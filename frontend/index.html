@@ -1,43 +1,172 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
+<html lang="en" dir="ltr">
 
-    <link
-      rel="icon"
-      type="image/svg+xml"
-      href="/favicon.svg"
-    />
+<head>
+  <meta charset="UTF-8" />
 
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
+  <!-- ================= MOBILE ================= -->
 
-    <meta
-      name="description"
-      content="MindCare AI helps users track moods, journal emotions, and receive supportive AI-powered mental wellness guidance."
-    />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  />
 
-    <meta
-      name="keywords"
-      content="Mental Health, AI Therapy, Mood Tracker, Wellness, Journal, MindCare AI"
-    />
+  <meta name="theme-color" content="#4f46e5" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#1e1b4b" media="(prefers-color-scheme: dark)" />
 
-    <meta
-      name="author"
-      content="MindCare AI"
-    />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="MindCare AI" />
+  <meta name="application-name" content="MindCare AI" />
+  <meta name="format-detection" content="telephone=no" />
 
-    <title>MindCare AI</title>
-  </head>
+  <!-- ================= SECURITY ================= -->
 
-  <body>
-    <div id="root"></div>
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="
+      default-src 'self';
+      script-src  'self' 'unsafe-inline';
+      style-src   'self' 'unsafe-inline' https://fonts.googleapis.com;
+      font-src    'self' https://fonts.gstatic.com;
+      img-src     'self' data: blob: https:;
+      connect-src 'self' https://api.anthropic.com;
+      frame-ancestors 'none';
+    "
+  />
 
-    <script
-      type="module"
-      src="/src/main.jsx"
-    ></script>
-  </body>
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()" />
+
+  <!-- ================= SEO ================= -->
+
+  <title>MindCare AI — Emotional Wellness Assistant</title>
+
+  <meta name="title"       content="MindCare AI — Emotional Wellness Assistant" />
+  <meta name="description" content="MindCare AI is a modern emotional wellness assistant that helps you reflect, journal emotions, chat safely, track moods, and receive supportive AI-powered guidance." />
+  <meta name="keywords"    content="mental health AI, mood tracker, AI chat therapy, emotional support, wellness journal, self care, mindfulness" />
+  <meta name="author"      content="MindCare AI" />
+  <meta name="robots"      content="index, follow, max-snippet:-1, max-image-preview:large" />
+
+  <!-- ================= CANONICAL ================= -->
+
+  <link rel="canonical" href="https://mindcare-ai-frontend.vercel.app/" />
+
+  <!-- ================= OPEN GRAPH ================= -->
+
+  <meta property="og:type"        content="website" />
+  <meta property="og:site_name"   content="MindCare AI" />
+  <meta property="og:locale"      content="en_US" />
+  <meta property="og:title"       content="MindCare AI — Emotional Wellness Assistant" />
+  <meta property="og:description" content="A beautiful AI-powered emotional wellness platform for journaling, mood tracking, and supportive conversations." />
+  <meta property="og:image"       content="https://mindcare-ai-frontend.vercel.app/preview.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"   content="MindCare AI dashboard showing mood trends and wellness insights" />
+  <meta property="og:url"         content="https://mindcare-ai-frontend.vercel.app/" />
+
+  <!-- ================= TWITTER ================= -->
+
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@MindCareAI" />
+  <meta name="twitter:creator"     content="@MindCareAI" />
+  <meta name="twitter:title"       content="MindCare AI — Emotional Wellness Assistant" />
+  <meta name="twitter:description" content="AI-powered emotional wellness, journaling, and supportive conversations." />
+  <meta name="twitter:image"       content="https://mindcare-ai-frontend.vercel.app/preview.png" />
+  <meta name="twitter:image:alt"   content="MindCare AI dashboard" />
+
+  <!-- ================= PWA MANIFEST ================= -->
+
+  <link rel="manifest" href="/manifest.webmanifest" />
+
+  <!-- ================= ICONS ================= -->
+
+  <link rel="icon"             type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon"             type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon"             type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="mask-icon"        href="/favicon.svg" color="#4f46e5" />
+  <meta name="msapplication-TileColor" content="#4f46e5" />
+
+  <!-- ================= PERFORMANCE ================= -->
+
+  <!-- DNS prefetch for third-party origins -->
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+  <link rel="dns-prefetch" href="https://api.anthropic.com" />
+
+  <!-- Preconnect to font origins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- ================= FONTS ================= -->
+
+  <!--
+    Upgraded from Inter to Syne (display headings) + DM Sans (body).
+    font-display=swap ensures text is visible during font load.
+    Only the weights actually used are requested to reduce payload.
+  -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- ================= STRUCTURED DATA ================= -->
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "MindCare AI",
+    "url": "https://mindcare-ai-frontend.vercel.app/",
+    "description": "AI-powered emotional wellness platform for journaling, mood tracking, and supportive conversations.",
+    "applicationCategory": "HealthApplication",
+    "operatingSystem": "All",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "author": {
+      "@type": "Organization",
+      "name": "MindCare AI"
+    }
+  }
+  </script>
+
+</head>
+
+<body>
+
+  <!-- Shown only if JS is disabled -->
+  <noscript>
+    <style>
+      #noscript-msg {
+        font-family: system-ui, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100svh;
+        text-align: center;
+        padding: 2rem;
+        color: #1e293b;
+      }
+    </style>
+    <div id="noscript-msg">
+      <p>
+        MindCare AI requires JavaScript to run.<br />
+        Please enable it in your browser settings.
+      </p>
+    </div>
+  </noscript>
+
+  <div id="root"></div>
+
+  <script type="module" src="/src/main.jsx"></script>
+
+</body>
+
 </html>

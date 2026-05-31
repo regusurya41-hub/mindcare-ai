@@ -1,20 +1,58 @@
 import mongoose from "mongoose";
 
+const MONGODB_URI = process.env.MONGODB_URI;
+
+if (!MONGODB_URI) {
+  throw new Error(
+    "❌ MONGODB_URI is missing. Please add it to your environment variables."
+  );
+}
+
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = {
+    conn: null,
+    promise: null,
+  };
+}
+
 export async function connectDatabase() {
   try {
-    const uri = process.env.MONGODB_URI;
-
-    if (!uri) {
-      throw new Error("MONGODB_URI is required in environment variables");
+    if (cached.conn) {
+      return cached.conn;
     }
 
-    mongoose.set("strictQuery", true);
+    if (!cached.promise) {
+      mongoose.set("strictQuery", true);
 
-    await mongoose.connect(uri);
+      cached.promise = mongoose.connect(MONGODB_URI, {
+        maxPoolSize: 10,
+        serverSelectionTimeoutMS: 5000,
+      });
+    }
 
-    console.log("✅ MongoDB connected successfully");
+    cached.conn = await cached.promise;
+
+    console.log(
+      `✅ MongoDB Connected: ${cached.conn.connection.host}`
+    );
+
+    mongoose.connection.on("error", (err) => {
+      console.error("❌ MongoDB Error:", err.message);
+    });
+
+    mongoose.connection.on("disconnected", () => {
+      console.warn("⚠️ MongoDB Disconnected");
+    });
+
+    return cached.conn;
   } catch (error) {
-    console.error("❌ MongoDB connection error:", error.message);
+    console.error(
+      "❌ Database Connection Failed:",
+      error.message
+    );
+
     process.exit(1);
   }
 }

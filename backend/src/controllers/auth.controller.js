@@ -1,64 +1,128 @@
-import User from '../models/user.model.js';
-import { signToken } from '../utils/token.js';
+import User from "../models/user.model.js";
+import { signToken } from "../utils/token.js";
 
-function toAuthResponse(user) {
-  const settings = user.settings?.toObject ? user.settings.toObject() : user.settings;
+/* ================================
+   Helpers
+================================ */
 
-  return {
-    token: signToken(user._id),
-    user: {
-      id: user._id.toString(),
-      name: user.name,
-      email: user.email,
-      avatarColor: user.avatarColor,
-      settings
-    }
-  };
-}
+const normalizeEmail = (email) =>
+  email?.toLowerCase().trim();
+
+const buildAuthResponse = (user) => ({
+  success: true,
+  token: signToken(user._id),
+  user: {
+    id: user._id.toString(),
+    name: user.name,
+    email: user.email,
+    avatarColor: user.avatarColor,
+    settings: user.settings,
+  },
+});
+
+/* ================================
+   Signup
+================================ */
 
 export async function signup(req, res, next) {
   try {
     const { name, email, password } = req.body;
-    const normalizedEmail = email.toLowerCase().trim();
-    const existing = await User.findOne({ email: normalizedEmail });
 
-    if (existing) {
-      return res.status(409).json({ message: 'Email is already registered' });
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
     }
 
-    const user = await User.create({ name: name.trim(), email: normalizedEmail, password });
-    res.status(201).json(toAuthResponse(user));
+    const normalizedEmail = normalizeEmail(email);
+
+    const existingUser = await User.findOne({
+      email: normalizedEmail,
+    });
+
+    if (existingUser) {
+      return res.status(409).json({
+        success: false,
+        message: "Email already registered",
+      });
+    }
+
+    const user = await User.create({
+      name: name.trim(),
+      email: normalizedEmail,
+      password,
+    });
+
+    return res.status(201).json(buildAuthResponse(user));
   } catch (error) {
     if (error.code === 11000) {
-      return res.status(409).json({ message: 'Email is already registered' });
+      return res.status(409).json({
+        success: false,
+        message: "Email already registered",
+      });
     }
+
     next(error);
   }
 }
+
+/* ================================
+   Login
+================================ */
 
 export async function login(req, res, next) {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email: email.toLowerCase().trim() }).select('+password');
 
-    if (!user || !(await user.comparePassword(password))) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Email and password are required",
+      });
     }
 
-    res.json(toAuthResponse(user));
+    const normalizedEmail = normalizeEmail(email);
+
+    const user = await User.findOne({
+      email: normalizedEmail,
+    }).select("+password");
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password",
+      });
+    }
+
+    const isMatch = await user.comparePassword(password);
+
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password",
+      });
+    }
+
+    return res.status(200).json(buildAuthResponse(user));
   } catch (error) {
     next(error);
   }
 }
 
+/* ================================
+   Current User
+================================ */
+
 export async function me(req, res) {
-  res.json({
+  return res.status(200).json({
+    success: true,
     user: {
       id: req.user._id.toString(),
       name: req.user.name,
       email: req.user.email,
       avatarColor: req.user.avatarColor,
-      settings: req.user.settings
-    }
+      settings: req.user.settings,
+    },
   });
 }

@@ -1,31 +1,58 @@
-import mongoose from 'mongoose';
-import User from '../models/user.model.js';
-import { verifyToken } from '../utils/token.js';
+import mongoose from "mongoose";
+import User from "../models/user.model.js";
+import { verifyToken } from "../utils/token.js";
+
+const unauthorized = (res, message) =>
+  res.status(401).json({
+    success: false,
+    message,
+  });
 
 export async function protect(req, res, next) {
   try {
-    const header = req.headers.authorization;
-    const [scheme, token] = header?.split(' ') || [];
+    const authHeader = req.headers.authorization;
 
-    if (!/^Bearer$/i.test(scheme || '') || !token) {
-      return res.status(401).json({ message: 'Authentication required' });
+    if (!authHeader?.startsWith("Bearer ")) {
+      return unauthorized(
+        res,
+        "Authentication required"
+      );
     }
+
+    const token = authHeader.substring(7);
 
     const decoded = verifyToken(token);
-    if (!decoded?.id || !mongoose.Types.ObjectId.isValid(decoded.id)) {
-      return res.status(401).json({ message: 'Invalid authentication token' });
+
+    if (
+      !decoded?.id ||
+      !mongoose.Types.ObjectId.isValid(decoded.id)
+    ) {
+      return unauthorized(
+        res,
+        "Invalid authentication token"
+      );
     }
 
-    const user = await User.findById(decoded.id).select('-password');
+    const user = await User.findById(decoded.id)
+      .select(
+        "_id name email avatarColor settings createdAt"
+      )
+      .lean();
 
     if (!user) {
-      return res.status(401).json({ message: 'User no longer exists' });
+      return unauthorized(
+        res,
+        "User no longer exists"
+      );
     }
 
     req.user = user;
+
     next();
-  } catch (error) {
-    if (error.statusCode === 500) return next(error);
-    return res.status(401).json({ message: 'Invalid or expired token' });
+  } catch {
+    return unauthorized(
+      res,
+      "Invalid or expired token"
+    );
   }
 }

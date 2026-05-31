@@ -1,95 +1,185 @@
-import compression from 'compression';
-import cors from 'cors';
-import express from 'express';
-import helmet from 'helmet';
-import morgan from 'morgan';
-import rateLimit from 'express-rate-limit';
+import compression from "compression";
+import cors from "cors";
+import express from "express";
+import helmet from "helmet";
+import morgan from "morgan";
+import rateLimit from "express-rate-limit";
 
-import authRoutes from './routes/auth.routes.js';
-import chatRoutes from './routes/chat.routes.js';
-import moodRoutes from './routes/mood.routes.js';
-import journalRoutes from './routes/journal.routes.js';
-import communityRoutes from './routes/community.routes.js';
-import settingsRoutes from './routes/settings.routes.js';
-import memoryRoutes from './routes/memory.routes.js';
+import authRoutes from "./routes/auth.routes.js";
+import chatRoutes from "./routes/chat.routes.js";
+import moodRoutes from "./routes/mood.routes.js";
+import journalRoutes from "./routes/journal.routes.js";
+import communityRoutes from "./routes/community.routes.js";
+import settingsRoutes from "./routes/settings.routes.js";
+import memoryRoutes from "./routes/memory.routes.js";
 
 import {
   errorHandler,
-  notFound
-} from './middleware/error.middleware.js';
+  notFound,
+} from "./middleware/error.middleware.js";
 
 const app = express();
 
-// Trust proxy
-app.set('trust proxy', 1);
+/* ==========================================
+   Trust Proxy
+========================================== */
 
-// Security
-app.use(helmet());
+app.set("trust proxy", 1);
 
-// Compression
-app.use(compression());
+/* ==========================================
+   Security
+========================================== */
 
-// CORS FIX
 app.use(
-  cors({
-    origin: [
-      'http://localhost:5173',
-      'https://mindcare-ai-819fd.web.app',
-      'https://mindcare-ai-frontend.vercel.app'
-    ],
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+  helmet({
+    crossOriginResourcePolicy: false,
   })
 );
 
-// Body parser
-app.use(express.json({ limit: '1mb' }));
+/* ==========================================
+   Compression
+========================================== */
+
+app.use(compression());
+
+/* ==========================================
+   CORS
+========================================== */
+
+const allowedOrigins = (
+  process.env.ALLOWED_ORIGINS || ""
+)
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin) return callback(null, true);
+
+      if (
+        allowedOrigins.length === 0 ||
+        allowedOrigins.includes(origin)
+      ) {
+        return callback(null, true);
+      }
+
+      return callback(
+        new Error("CORS policy violation")
+      );
+    },
+    credentials: true,
+  })
+);
+
+/* ==========================================
+   Body Parsers
+========================================== */
+
+app.use(
+  express.json({
+    limit: "100kb",
+  })
+);
 
 app.use(
   express.urlencoded({
-    extended: true
+    extended: true,
+    limit: "100kb",
   })
 );
 
-// Logger
+/* ==========================================
+   Logging
+========================================== */
+
 app.use(
   morgan(
-    process.env.NODE_ENV === 'production'
-      ? 'combined'
-      : 'dev'
+    process.env.NODE_ENV === "production"
+      ? "combined"
+      : "dev"
   )
 );
 
-// Rate limit
-app.use(
-  rateLimit({
-    windowMs: 15 * 60 * 1000,
-    limit: 200,
-    standardHeaders: true,
-    legacyHeaders: false
-  })
-);
+/* ==========================================
+   Rate Limiting
+========================================== */
 
-// Health route
-app.get('/health', (_req, res) => {
-  res.json({
-    status: 'ok',
-    service: 'MindCare AI API'
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 200,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message:
+      "Too many requests. Please try again later.",
+  },
+});
+
+const aiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 50,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message:
+      "AI request limit exceeded. Please try again later.",
+  },
+});
+
+app.use(globalLimiter);
+
+/* ==========================================
+   Health Check
+========================================== */
+
+app.get("/health", (_req, res) => {
+  res.status(200).json({
+    success: true,
+    service: "MindCare AI API",
+    environment:
+      process.env.NODE_ENV || "development",
+    timestamp: new Date().toISOString(),
   });
 });
 
-// API routes
-app.use('/api/auth', authRoutes);
-app.use('/api/chat', chatRoutes);
-app.use('/api/moods', moodRoutes);
-app.use('/api/journals', journalRoutes);
-app.use('/api/community', communityRoutes);
-app.use('/api/settings', settingsRoutes);
-app.use('/api/memory', memoryRoutes);
+/* ==========================================
+   API Versioning
+========================================== */
 
-// Error handlers
+const API_PREFIX = "/api/v1";
+
+/* ==========================================
+   Routes
+========================================== */
+
+app.use(`${API_PREFIX}/auth`, authRoutes);
+
+app.use(
+  `${API_PREFIX}/chat`,
+  aiLimiter,
+  chatRoutes
+);
+
+app.use(`${API_PREFIX}/moods`, moodRoutes);
+app.use(`${API_PREFIX}/journals`, journalRoutes);
+app.use(`${API_PREFIX}/community`, communityRoutes);
+app.use(`${API_PREFIX}/settings`, settingsRoutes);
+app.use(`${API_PREFIX}/memory`, memoryRoutes);
+
+/* ==========================================
+   404 Handler
+========================================== */
+
 app.use(notFound);
+
+/* ==========================================
+   Global Error Handler
+========================================== */
+
 app.use(errorHandler);
 
 export default app;

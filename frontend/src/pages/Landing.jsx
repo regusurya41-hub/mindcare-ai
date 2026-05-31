@@ -2,124 +2,141 @@ import { motion } from 'framer-motion';
 import {
   ArrowRight,
   Bot,
-  ChartSpline,
+  Brain,
   Heart,
   Lock,
   Moon,
-  PenLine,
-  ShieldCheck,
+ ShieldCheck,
   Sparkles,
   Star,
   UsersRound
 } from 'lucide-react';
+
 import { Link } from 'react-router-dom';
 
 const features = [
   {
     icon: Bot,
     title: 'Emotion-aware AI',
-    text: 'Supportive conversations with crisis-aware emotional safety.'
+    text: 'Smart emotional support that adapts to your mood and feelings.'
   },
   {
-    icon: ChartSpline,
-    title: 'Mood insights',
-    text: 'Track patterns, emotional shifts, and mental wellness trends.'
+    icon: Brain,
+    title: 'Mental wellness',
+    text: 'Guided calming conversations for stress and anxiety relief.'
   },
   {
-    icon: PenLine,
-    title: 'Private journaling',
-    text: 'Write thoughts safely with lock mode and reflection support.'
+    icon: Lock,
+    title: 'Private & secure',
+    text: 'Your chats and journals stay protected and anonymous.'
   },
   {
     icon: UsersRound,
-    title: 'Anonymous community',
-    text: 'Share feelings and connect without revealing identity.'
+    title: 'Supportive community',
+    text: 'Connect with people in a safe and positive environment.'
   }
 ];
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0 }
-};
-
 export default function Landing() {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#f8fbff] via-[#eef2ff] to-[#f5f7ff] text-slate-900 dark:from-[#060816] dark:via-[#0d1328] dark:to-[#10182f] dark:text-white">
+    <div className="relative min-h-screen overflow-hidden bg-[#070b17] text-white">
 
-      {/* BACKGROUND ORBS */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute left-[-120px] top-10 h-[420px] w-[420px] rounded-full bg-violet-400/20 blur-3xl" />
-        <div className="absolute right-[-100px] top-20 h-[400px] w-[400px] rounded-full bg-cyan-400/20 blur-3xl" />
-        <div className="absolute bottom-[-180px] left-1/3 h-[450px] w-[450px] rounded-full bg-indigo-500/20 blur-3xl" />
+      {/* PREMIUM BACKGROUND */}
+
+      <div className="absolute inset-0 overflow-hidden">
+
+        <div className="absolute left-[-150px] top-[-120px] h-[450px] w-[450px] rounded-full bg-indigo-500/25 blur-3xl" />
+
+        <div className="absolute right-[-120px] top-[120px] h-[420px] w-[420px] rounded-full bg-fuchsia-500/20 blur-3xl" />
+
+        <div className="absolute bottom-[-180px] left-[25%] h-[500px] w-[500px] rounded-full bg-cyan-400/15 blur-3xl" />
+
       </div>
 
       {/* NAVBAR */}
-      <nav className="sticky top-4 z-50 mx-auto mt-4 flex w-[95%] max-w-7xl items-center justify-between rounded-3xl border border-white/40 bg-white/60 px-5 py-4 shadow-2xl backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.05]">
-        <Link className="flex items-center gap-3" to="/">
-          <div className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 text-white shadow-lg shadow-indigo-500/30">
-            <Moon size={20} />
+
+      <nav className="fixed left-1/2 top-5 z-50 flex w-[94%] max-w-7xl -translate-x-1/2 items-center justify-between rounded-3xl border border-white/10 bg-white/5 px-6 py-4 backdrop-blur-2xl">
+
+        <Link
+          to="/"
+          className="flex items-center gap-3"
+        >
+          <div className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 shadow-2xl shadow-indigo-500/30">
+            <Moon size={22} />
           </div>
 
           <div>
-            <h1 className="text-lg font-black tracking-tight">
+            <h1 className="text-xl font-black tracking-tight">
               MindCare AI
             </h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Emotional wellness companion
+
+            <p className="text-xs text-slate-400">
+              Emotional wellness platform
             </p>
           </div>
         </Link>
 
         <div className="flex items-center gap-3">
+
           <Link
             to="/login"
-            className="rounded-2xl border border-slate-200 bg-white/70 px-5 py-2 font-semibold transition-all hover:scale-105 hover:bg-white dark:border-white/10 dark:bg-white/10"
+            className="rounded-2xl border border-white/10 bg-white/5 px-5 py-2 font-semibold transition-all duration-300 hover:scale-105 hover:bg-white/10"
           >
             Login
           </Link>
 
           <Link
             to="/signup"
-            className="rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-500 px-5 py-2 font-bold text-white shadow-lg shadow-indigo-500/30 transition-all hover:scale-105 hover:shadow-indigo-500/50"
+            className="rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-500 px-5 py-2 font-bold text-white shadow-2xl shadow-indigo-500/30 transition-all duration-300 hover:scale-105"
           >
             Start Free
           </Link>
+
         </div>
       </nav>
 
       {/* HERO */}
-      <section className="relative mx-auto grid min-h-[90vh] max-w-7xl items-center gap-14 px-6 py-16 lg:grid-cols-2">
+
+      <section className="relative mx-auto grid min-h-screen max-w-7xl items-center gap-20 px-6 pt-36 lg:grid-cols-2">
 
         {/* LEFT */}
+
         <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          animate="visible"
-          transition={{ duration: 0.7 }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
         >
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-white/70 px-4 py-2 text-sm font-bold text-indigo-600 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-white/10 dark:text-indigo-200">
+
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-indigo-400/20 bg-indigo-500/10 px-4 py-2 text-sm font-bold text-indigo-200 backdrop-blur-xl">
             <ShieldCheck size={16} />
-            Trusted emotional wellness platform
+            Trusted emotional AI companion
           </div>
 
-          <h1 className="max-w-3xl text-5xl font-black leading-tight md:text-7xl">
-            Feel heard.
+          <h1 className="text-5xl font-black leading-tight tracking-tight md:text-7xl">
+
+            Your safe space
             <br />
-            Feel calmer.
+
+            for mental
             <br />
-            Feel supported.
+
+            wellness.
+
           </h1>
 
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600 dark:text-slate-300">
-            MindCare AI gives you a private emotional wellness space with calming conversations, journaling, mood tracking, and supportive AI guidance.
+          <p className="mt-8 max-w-2xl text-lg leading-8 text-slate-300">
+            MindCare AI helps you relax, journal, chat, track moods,
+            and feel emotionally supported through calming AI-powered experiences.
           </p>
 
-          <div className="mt-8 flex flex-wrap gap-4">
+          <div className="mt-10 flex flex-wrap gap-4">
+
             <Link
               to="/signup"
-              className="group flex items-center gap-2 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-500 px-7 py-4 font-bold text-white shadow-xl shadow-indigo-500/30 transition-all hover:scale-105 hover:shadow-indigo-500/50"
+              className="group flex items-center gap-2 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-500 px-8 py-4 font-bold text-white shadow-2xl shadow-indigo-500/30 transition-all duration-300 hover:scale-105"
             >
               Get Started
+
               <ArrowRight
                 size={18}
                 className="transition-transform group-hover:translate-x-1"
@@ -128,146 +145,176 @@ export default function Landing() {
 
             <Link
               to="/login"
-              className="rounded-2xl border border-slate-200 bg-white/80 px-7 py-4 font-bold transition-all hover:scale-105 hover:bg-white dark:border-white/10 dark:bg-white/10"
+              className="rounded-2xl border border-white/10 bg-white/5 px-8 py-4 font-bold backdrop-blur-xl transition-all duration-300 hover:scale-105 hover:bg-white/10"
             >
               Open Dashboard
             </Link>
+
           </div>
 
-          {/* TRUST */}
-          <div className="mt-10 flex flex-wrap items-center gap-6 text-sm font-semibold text-slate-500 dark:text-slate-400">
-            <div className="flex items-center gap-2">
-              <Star className="fill-yellow-400 text-yellow-400" size={16} />
-              4.9 user experience
+          {/* STATS */}
+
+          <div className="mt-12 flex flex-wrap gap-8">
+
+            <div>
+              <h2 className="text-4xl font-black text-indigo-300">
+                98%
+              </h2>
+
+              <p className="mt-1 text-sm text-slate-400">
+                Positive support feedback
+              </p>
             </div>
 
-            <div className="flex items-center gap-2">
-              <Lock size={16} />
-              Privacy focused
+            <div>
+              <h2 className="text-4xl font-black text-violet-300">
+                24/7
+              </h2>
+
+              <p className="mt-1 text-sm text-slate-400">
+                AI emotional companion
+              </p>
             </div>
 
-            <div className="flex items-center gap-2">
-              <Heart className="text-pink-500" size={16} />
-              Calm-first design
+            <div>
+              <h2 className="text-4xl font-black text-cyan-300">
+                Secure
+              </h2>
+
+              <p className="mt-1 text-sm text-slate-400">
+                Anonymous conversations
+              </p>
             </div>
+
           </div>
+
         </motion.div>
 
-        {/* RIGHT HERO CARD */}
+        {/* RIGHT SIDE */}
+
         <motion.div
-          initial={{ opacity: 0, scale: 0.92, y: 30 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.9 }}
           className="relative"
         >
-          <div className="rounded-[38px] border border-white/50 bg-white/70 p-5 shadow-2xl backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.05]">
 
-            <div className="rounded-[30px] bg-gradient-to-br from-white via-indigo-50 to-violet-50 p-6 dark:from-[#141b34] dark:via-[#1a2140] dark:to-[#181d38]">
+          <div className="rounded-[38px] border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-2xl">
+
+            <div className="rounded-[32px] bg-gradient-to-br from-[#12182c] to-[#1b2140] p-6">
+
+              {/* HEADER */}
 
               <div className="flex items-center justify-between">
+
                 <div>
-                  <p className="text-sm font-bold text-indigo-600 dark:text-indigo-300">
-                    Live AI wellness
+                  <p className="text-sm font-bold text-indigo-300">
+                    Live AI Support
                   </p>
 
                   <h2 className="text-2xl font-black">
-                    Gentle support chat
+                    Calm conversation
                   </h2>
                 </div>
 
-                <div className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 text-white">
-                  <Bot size={22} />
+                <div className="grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500">
+                  <Bot size={24} />
                 </div>
+
               </div>
 
               {/* CHAT */}
+
               <div className="mt-8 space-y-4">
 
-                <motion.div
-                  initial={{ opacity: 0, x: -30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="mr-10 rounded-3xl rounded-bl-md bg-white/90 p-4 shadow-sm dark:bg-white/10"
-                >
-                  I feel overwhelmed today.
-                </motion.div>
+                <div className="mr-14 rounded-3xl rounded-bl-md bg-white/10 p-4 backdrop-blur-xl">
+                  I feel mentally exhausted today.
+                </div>
 
-                <motion.div
-                  initial={{ opacity: 0, x: 30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.4 }}
-                  className="ml-10 rounded-3xl rounded-br-md bg-gradient-to-r from-indigo-500 to-violet-500 p-4 text-white shadow-lg"
-                >
-                  That sounds heavy. Let us slow things down together.
-                </motion.div>
+                <div className="ml-14 rounded-3xl rounded-br-md bg-gradient-to-r from-indigo-500 to-violet-500 p-4 text-white shadow-xl">
+                  I understand 💜  
+                  Let us slow down and breathe together for a moment.
+                </div>
 
-                <motion.div
-                  initial={{ opacity: 0, x: -30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.6 }}
-                  className="mr-16 rounded-3xl rounded-bl-md bg-white/90 p-4 shadow-sm dark:bg-white/10"
-                >
-                  I just want peace in my mind.
-                </motion.div>
+                <div className="mr-20 rounded-3xl rounded-bl-md bg-white/10 p-4 backdrop-blur-xl">
+                  I just want peace in my head.
+                </div>
+
               </div>
 
-              {/* STATS */}
+              {/* MINI STATS */}
+
               <div className="mt-8 grid grid-cols-3 gap-3">
+
                 {[
-                  { label: 'Calm', value: '92%' },
-                  { label: 'Focus', value: '88%' },
-                  { label: 'Hope', value: '95%' }
+                  {
+                    label: 'Calm',
+                    value: '92%'
+                  },
+                  {
+                    label: 'Focus',
+                    value: '88%'
+                  },
+                  {
+                    label: 'Hope',
+                    value: '95%'
+                  }
                 ].map((item) => (
                   <div
                     key={item.label}
-                    className="rounded-3xl bg-white/80 p-4 text-center shadow-sm dark:bg-white/10"
+                    className="rounded-3xl bg-white/5 p-4 text-center backdrop-blur-xl"
                   >
-                    <p className="text-2xl font-black text-indigo-600 dark:text-indigo-300">
+                    <h3 className="text-2xl font-black text-indigo-300">
                       {item.value}
-                    </p>
-                    <p className="mt-1 text-xs font-bold text-slate-500 dark:text-slate-400">
+                    </h3>
+
+                    <p className="mt-1 text-xs font-bold text-slate-400">
                       {item.label}
                     </p>
                   </div>
                 ))}
+
               </div>
 
             </div>
+
           </div>
+
         </motion.div>
+
       </section>
 
       {/* FEATURES */}
-      <section className="mx-auto max-w-7xl px-6 pb-24">
 
-        <div className="mb-12 text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-indigo-100 px-4 py-2 text-sm font-bold text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300">
+      <section className="mx-auto max-w-7xl px-6 pb-28">
+
+        <div className="mb-14 text-center">
+
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-indigo-400/20 bg-indigo-500/10 px-4 py-2 text-sm font-bold text-indigo-200">
             <Sparkles size={16} />
-            Everything designed for emotional comfort
+            Premium wellness experience
           </div>
 
-          <h2 className="text-4xl font-black">
-            Features that actually help
+          <h2 className="text-4xl font-black md:text-5xl">
+            Designed to make you feel better
           </h2>
 
-          <p className="mx-auto mt-4 max-w-2xl text-slate-600 dark:text-slate-300">
-            Built with calming UI, supportive AI, and privacy-first emotional wellness experiences.
+          <p className="mx-auto mt-5 max-w-2xl text-lg text-slate-400">
+            Every screen, animation, and interaction is built to feel calm, soft, and emotionally supportive.
           </p>
+
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {features.map(({ icon: Icon, title, text }, index) => (
+
+          {features.map(({ icon: Icon, title, text }) => (
             <motion.div
-              key={title}
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
               whileHover={{ y: -8 }}
-              className="group rounded-[30px] border border-white/50 bg-white/70 p-6 shadow-xl backdrop-blur-2xl transition-all hover:shadow-2xl dark:border-white/10 dark:bg-white/[0.05]"
+              key={title}
+              className="rounded-[30px] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl transition-all duration-300 hover:bg-white/[0.07]"
             >
-              <div className="grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 text-white shadow-lg shadow-indigo-500/20">
+
+              <div className="grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 shadow-xl shadow-indigo-500/20">
                 <Icon size={24} />
               </div>
 
@@ -275,13 +322,17 @@ export default function Landing() {
                 {title}
               </h3>
 
-              <p className="mt-3 leading-7 text-slate-600 dark:text-slate-300">
+              <p className="mt-3 leading-7 text-slate-400">
                 {text}
               </p>
+
             </motion.div>
           ))}
+
         </div>
+
       </section>
+
     </div>
   );
 }

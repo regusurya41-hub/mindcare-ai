@@ -1,19 +1,63 @@
-import 'dotenv/config';
-import mongoose from 'mongoose';
-import app from './app.js';
+import "dotenv/config";
+import app from "./app.js";
+import { connectDatabase } from "./config/database.js";
 
 const PORT = process.env.PORT || 5000;
 
-console.log("MONGODB_URI:", process.env.MONGODB_URI);
+let server;
 
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => {
-    console.log("MongoDB connected successfully");
+async function startServer() {
+  try {
+    await connectDatabase();
 
-    app.listen(PORT, () => {
-      console.log(`MindCare AI API running on port ${PORT}`);
+    server = app.listen(PORT, () => {
+      console.log(`🚀 MindCare AI API running on port ${PORT}`);
+      console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}`);
     });
-  })
-  .catch((err) => {
-    console.error("MongoDB connection error:", err);
-  });
+  } catch (error) {
+    console.error("❌ Failed to start server:", error.message);
+    process.exit(1);
+  }
+}
+
+startServer();
+
+/* ----------------------------
+   Graceful Shutdown
+----------------------------- */
+
+process.on("SIGINT", async () => {
+  console.log("⚠️ SIGINT received. Shutting down...");
+
+  if (server) {
+    server.close(() => {
+      console.log("✅ HTTP server closed");
+      process.exit(0);
+    });
+  }
+});
+
+process.on("SIGTERM", async () => {
+  console.log("⚠️ SIGTERM received. Shutting down...");
+
+  if (server) {
+    server.close(() => {
+      console.log("✅ HTTP server closed");
+      process.exit(0);
+    });
+  }
+});
+
+/* ----------------------------
+   Global Error Handlers
+----------------------------- */
+
+process.on("uncaughtException", (error) => {
+  console.error("❌ Uncaught Exception:", error);
+  process.exit(1);
+});
+
+process.on("unhandledRejection", (reason) => {
+  console.error("❌ Unhandled Rejection:", reason);
+  process.exit(1);
+});
