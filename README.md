@@ -86,3 +86,4 @@ VITE_API_URL=https://your-render-api.onrender.com/api
 ## Safety Note
 
 MindCare AI is supportive wellness software, not medical care. Crisis detection routes users toward emergency support, trusted people, and professional resources.
+Trigger redeploy 
