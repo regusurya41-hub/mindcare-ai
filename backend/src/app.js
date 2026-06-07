@@ -66,7 +66,9 @@ app.use(
       }
 
       return callback(
-        new Error("CORS policy violation")
+        new Error(
+          `CORS blocked for origin: ${origin}`
+        )
       );
     },
     credentials: true,
@@ -74,24 +76,24 @@ app.use(
 );
 
 /* ==========================================
-   Body Parsers
+   Body Parser
 ========================================== */
 
 app.use(
   express.json({
-    limit: "100kb",
+    limit: "1mb",
   })
 );
 
 app.use(
   express.urlencoded({
     extended: true,
-    limit: "100kb",
+    limit: "1mb",
   })
 );
 
 /* ==========================================
-   Logging
+   Logger
 ========================================== */
 
 app.use(
@@ -108,7 +110,7 @@ app.use(
 
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  limit: 200,
+  max: 200,
   standardHeaders: true,
   legacyHeaders: false,
   message: {
@@ -120,26 +122,46 @@ const globalLimiter = rateLimit({
 
 const aiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  limit: 50,
+  max: 50,
   standardHeaders: true,
   legacyHeaders: false,
   message: {
     success: false,
     message:
-      "AI request limit exceeded. Please try again later.",
+      "AI request limit exceeded.",
   },
 });
 
 app.use(globalLimiter);
 
 /* ==========================================
-   Health Check
+   Root Route
 ========================================== */
 
-app.get("/health", (_req, res) => {
+app.get("/", (_req, res) => {
   res.status(200).json({
     success: true,
     service: "MindCare AI API",
+    version: "1.0.0",
+    status: "running",
+  });
+});
+
+/* ==========================================
+   API Prefix
+========================================== */
+
+const API_PREFIX = "/api/v1";
+
+/* ==========================================
+   Health Check
+========================================== */
+
+app.get(`${API_PREFIX}/health`, (_req, res) => {
+  res.status(200).json({
+    success: true,
+    service: "MindCare AI API",
+    version: "1.0.0",
     environment:
       process.env.NODE_ENV || "development",
     timestamp: new Date().toISOString(),
@@ -147,16 +169,13 @@ app.get("/health", (_req, res) => {
 });
 
 /* ==========================================
-   API Versioning
-========================================== */
-
-const API_PREFIX = "/api/v1";
-
-/* ==========================================
    Routes
 ========================================== */
 
-app.use(`${API_PREFIX}/auth`, authRoutes);
+app.use(
+  `${API_PREFIX}/auth`,
+  authRoutes
+);
 
 app.use(
   `${API_PREFIX}/chat`,
@@ -164,11 +183,30 @@ app.use(
   chatRoutes
 );
 
-app.use(`${API_PREFIX}/moods`, moodRoutes);
-app.use(`${API_PREFIX}/journals`, journalRoutes);
-app.use(`${API_PREFIX}/community`, communityRoutes);
-app.use(`${API_PREFIX}/settings`, settingsRoutes);
-app.use(`${API_PREFIX}/memory`, memoryRoutes);
+app.use(
+  `${API_PREFIX}/moods`,
+  moodRoutes
+);
+
+app.use(
+  `${API_PREFIX}/journals`,
+  journalRoutes
+);
+
+app.use(
+  `${API_PREFIX}/community`,
+  communityRoutes
+);
+
+app.use(
+  `${API_PREFIX}/settings`,
+  settingsRoutes
+);
+
+app.use(
+  `${API_PREFIX}/memory`,
+  memoryRoutes
+);
 
 /* ==========================================
    404 Handler

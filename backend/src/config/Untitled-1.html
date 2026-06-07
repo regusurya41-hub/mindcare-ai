@@ -1,0 +1,1157 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>WeatherSphere Pro</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+
+/* ======================
+RESET
+====================== */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+scroll-behavior:smooth;
+}
+
+:root{
+--primary:#00b4ff;
+--secondary:#6a5cff;
+--glass:rgba(255,255,255,0.12);
+--border:rgba(255,255,255,0.2);
+--shadow:0 8px 30px rgba(0,0,0,0.15);
+}
+
+body{
+font-family:'Poppins',sans-serif;
+background:linear-gradient(
+135deg,
+#0f172a,
+#111827,
+#1e293b
+);
+color:white;
+overflow-x:hidden;
+min-height:100vh;
+transition:.4s;
+}
+
+/* ======================
+LOADER
+====================== */
+
+.loader-wrapper{
+position:fixed;
+inset:0;
+background:#0f172a;
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:9999;
+}
+
+.loader{
+width:70px;
+height:70px;
+border-radius:50%;
+border:6px solid rgba(255,255,255,.2);
+border-top:6px solid #00b4ff;
+animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+100%{
+transform:rotate(360deg);
+}
+}
+
+/* ======================
+NAVBAR
+====================== */
+
+.navbar{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+padding:20px 8%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(15px);
+border-bottom:1px solid rgba(255,255,255,0.08);
+z-index:1000;
+}
+
+.logo{
+font-size:1.5rem;
+font-weight:700;
+}
+
+.logo span{
+color:#00b4ff;
+}
+
+.nav-links{
+display:flex;
+gap:30px;
+list-style:none;
+}
+
+.nav-links a{
+color:white;
+text-decoration:none;
+font-weight:500;
+transition:.3s;
+}
+
+.nav-links a:hover{
+color:#00b4ff;
+}
+
+.nav-right{
+display:flex;
+gap:15px;
+align-items:center;
+}
+
+.circle-btn{
+width:48px;
+height:48px;
+border:none;
+border-radius:50%;
+cursor:pointer;
+background:rgba(255,255,255,.1);
+color:white;
+font-size:1rem;
+}
+
+/* ======================
+HERO
+====================== */
+
+.hero{
+padding:140px 8% 60px;
+}
+
+.search-box{
+max-width:650px;
+margin:auto;
+display:flex;
+gap:10px;
+}
+
+.search-box input{
+flex:1;
+padding:18px;
+border:none;
+outline:none;
+border-radius:50px;
+background:rgba(255,255,255,.08);
+backdrop-filter:blur(10px);
+color:white;
+font-size:1rem;
+}
+
+.search-box button{
+padding:18px 25px;
+border:none;
+border-radius:50px;
+background:#00b4ff;
+color:white;
+cursor:pointer;
+font-weight:600;
+}
+
+.main-weather{
+margin-top:40px;
+display:grid;
+grid-template-columns:2fr 1fr;
+gap:25px;
+}
+
+.glass-card{
+background:rgba(255,255,255,0.08);
+border:1px solid rgba(255,255,255,0.12);
+backdrop-filter:blur(18px);
+border-radius:25px;
+padding:25px;
+box-shadow:var(--shadow);
+}
+
+/* ======================
+CURRENT WEATHER
+====================== */
+
+.current-weather{
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.temp{
+font-size:5rem;
+font-weight:700;
+}
+
+.city{
+font-size:1.4rem;
+margin-top:10px;
+}
+
+.condition{
+margin-top:8px;
+opacity:.8;
+}
+
+.weather-icon{
+font-size:6rem;
+color:#ffd54f;
+}
+
+/* ======================
+HIGHLIGHTS
+====================== */
+
+.highlights{
+margin-top:40px;
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+}
+
+.highlight-card{
+background:rgba(255,255,255,0.08);
+border:1px solid rgba(255,255,255,0.12);
+backdrop-filter:blur(15px);
+padding:25px;
+border-radius:20px;
+text-align:center;
+}
+
+.highlight-card i{
+font-size:2rem;
+margin-bottom:15px;
+color:#00b4ff;
+}
+
+.highlight-card h2{
+margin-top:10px;
+}
+
+/* ======================
+HOURLY
+====================== */
+
+.hourly{
+margin-top:60px;
+}
+
+.section-title{
+font-size:2rem;
+margin-bottom:25px;
+}
+
+.hourly-container{
+display:flex;
+gap:20px;
+overflow:auto;
+padding-bottom:10px;
+}
+
+.hour-card{
+min-width:130px;
+padding:20px;
+border-radius:20px;
+background:rgba(255,255,255,.08);
+text-align:center;
+}
+
+.hour-card i{
+font-size:2rem;
+margin:10px 0;
+}
+
+/* ======================
+WEEKLY
+====================== */
+
+.weekly{
+margin-top:60px;
+}
+
+.week-card{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:18px;
+margin-bottom:15px;
+border-radius:18px;
+background:rgba(255,255,255,.08);
+}
+
+/* ======================
+WORLD CITIES
+====================== */
+
+.world-grid{
+margin-top:60px;
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+}
+
+.world-card{
+padding:25px;
+border-radius:20px;
+background:rgba(255,255,255,.08);
+text-align:center;
+}
+
+/* ======================
+FARMER ADVISORY
+====================== */
+
+.advisory{
+margin-top:60px;
+background:linear-gradient(
+135deg,
+#00b4ff,
+#6a5cff
+);
+padding:40px;
+border-radius:30px;
+}
+
+.advisory h2{
+margin-bottom:15px;
+}
+
+.advisory ul{
+margin-top:20px;
+padding-left:20px;
+}
+
+.advisory li{
+margin-bottom:10px;
+}
+
+/* ======================
+FAVORITES
+====================== */
+
+.favorites{
+margin-top:60px;
+}
+
+.favorite-list{
+display:flex;
+gap:15px;
+flex-wrap:wrap;
+}
+
+.favorite-city{
+padding:12px 20px;
+background:rgba(255,255,255,.08);
+border-radius:30px;
+}
+
+/* ======================
+FOOTER
+====================== */
+
+footer{
+margin-top:80px;
+padding:40px;
+text-align:center;
+opacity:.8;
+}
+
+/* ======================
+MOBILE NAV
+====================== */
+
+.mobile-nav{
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+display:none;
+justify-content:space-around;
+padding:15px;
+background:#111827;
+z-index:1000;
+}
+
+.mobile-nav i{
+font-size:1.3rem;
+}
+
+/* ======================
+RESPONSIVE
+====================== */
+
+@media(max-width:900px){
+
+.main-weather{
+grid-template-columns:1fr;
+}
+
+.nav-links{
+display:none;
+}
+
+.mobile-nav{
+display:flex;
+}
+
+.temp{
+font-size:3.5rem;
+}
+
+.current-weather{
+flex-direction:column;
+text-align:center;
+gap:20px;
+}
+
+}
+.toast{
+position:fixed;
+top:90px;
+right:20px;
+background:#00b4ff;
+color:white;
+padding:15px 25px;
+border-radius:12px;
+z-index:9999;
+display:none;
+box-shadow:0 8px 25px rgba(0,0,0,.2);
+}
+</style>
+</head>
+<div class="toast" id="toast"></div>
+<body>
+
+<div class="loader-wrapper" id="loader">
+<div class="loader"></div>
+</div>
+
+<nav class="navbar">
+
+<div class="logo">
+Weather<span>Sphere</span>
+</div>
+
+<ul class="nav-links">
+<li><a href="#">Home</a></li>
+<li><a href="#">Forecast</a></li>
+<li><a href="#">Cities</a></li>
+<li><a href="#">Advisory</a></li>
+</ul>
+
+<div class="nav-right">
+<button class="circle-btn" id="themeBtn">
+<i class="fa-solid fa-moon"></i>
+</button>
+<button class="circle-btn">
+<i class="fa-solid fa-heart"></i>
+</button>
+</div>
+
+</nav>
+
+<section class="hero">
+<!-- ======================
+WEATHER HIGHLIGHTS
+====================== -->
+
+<div class="highlights">
+
+<div class="highlight-card">
+<i class="fa-solid fa-droplet"></i>
+<p>Humidity</p>
+<h2>68%</h2>
+</div>
+
+<div class="highlight-card">
+<i class="fa-solid fa-wind"></i>
+<p>Wind Speed</p>
+<h2>14 km/h</h2>
+</div>
+
+<div class="highlight-card">
+<i class="fa-solid fa-eye"></i>
+<p>Visibility</p>
+<h2>10 km</h2>
+</div>
+
+<div class="highlight-card">
+<i class="fa-solid fa-temperature-half"></i>
+<p>Feels Like</p>
+<h2>31°</h2>
+</div>
+
+<div class="highlight-card">
+<i class="fa-solid fa-sun"></i>
+<p>UV Index</p>
+<h2>Moderate</h2>
+</div>
+
+<div class="highlight-card">
+<i class="fa-solid fa-leaf"></i>
+<p>Air Quality</p>
+<h2>Good</h2>
+</div>
+
+</div>
+
+<!-- ======================
+HOURLY FORECAST
+====================== -->
+
+<div class="hourly">
+
+<h2 class="section-title">
+Hourly Forecast
+</h2>
+
+<div class="hourly-container">
+
+<div class="hour-card">
+<p>09 AM</p>
+<i class="fa-solid fa-sun"></i>
+<h3>29°</h3>
+</div>
+
+<div class="hour-card">
+<p>10 AM</p>
+<i class="fa-solid fa-cloud-sun"></i>
+<h3>30°</h3>
+</div>
+
+<div class="hour-card">
+<p>11 AM</p>
+<i class="fa-solid fa-cloud"></i>
+<h3>31°</h3>
+</div>
+
+<div class="hour-card">
+<p>12 PM</p>
+<i class="fa-solid fa-cloud-rain"></i>
+<h3>28°</h3>
+</div>
+
+<div class="hour-card">
+<p>01 PM</p>
+<i class="fa-solid fa-cloud-rain"></i>
+<h3>27°</h3>
+</div>
+
+<div class="hour-card">
+<p>02 PM</p>
+<i class="fa-solid fa-cloud-sun"></i>
+<h3>29°</h3>
+</div>
+
+<div class="hour-card">
+<p>03 PM</p>
+<i class="fa-solid fa-sun"></i>
+<h3>31°</h3>
+</div>
+
+<div class="hour-card">
+<p>04 PM</p>
+<i class="fa-solid fa-sun"></i>
+<h3>30°</h3>
+</div>
+
+</div>
+
+</div>
+
+<!-- ======================
+7 DAY FORECAST
+====================== -->
+
+<div class="weekly">
+
+<h2 class="section-title">
+7 Day Forecast
+</h2>
+
+<div class="week-card">
+<span>Monday</span>
+<span>☀️ Sunny</span>
+<span>31° / 24°</span>
+</div>
+
+<div class="week-card">
+<span>Tuesday</span>
+<span>🌤 Partly Cloudy</span>
+<span>30° / 23°</span>
+</div>
+
+<div class="week-card">
+<span>Wednesday</span>
+<span>🌧 Rain</span>
+<span>28° / 22°</span>
+</div>
+
+<div class="week-card">
+<span>Thursday</span>
+<span>⛅ Cloudy</span>
+<span>29° / 23°</span>
+</div>
+
+<div class="week-card">
+<span>Friday</span>
+<span>☀️ Sunny</span>
+<span>32° / 25°</span>
+</div>
+
+<div class="week-card">
+<span>Saturday</span>
+<span>🌦 Showers</span>
+<span>27° / 22°</span>
+</div>
+
+<div class="week-card">
+<span>Sunday</span>
+<span>☀️ Sunny</span>
+<span>31° / 24°</span>
+</div>
+
+</div>
+
+<!-- ======================
+WORLD WEATHER
+====================== -->
+
+<div class="world-grid">
+
+<div class="world-card">
+<h3>New York</h3>
+<h1>24°</h1>
+<p>Cloudy</p>
+</div>
+
+<div class="world-card">
+<h3>London</h3>
+<h1>18°</h1>
+<p>Rainy</p>
+</div>
+
+<div class="world-card">
+<h3>Tokyo</h3>
+<h1>28°</h1>
+<p>Sunny</p>
+</div>
+
+<div class="world-card">
+<h3>Dubai</h3>
+<h1>39°</h1>
+<p>Hot</p>
+</div>
+
+</div>
+
+<!-- ======================
+SUNRISE / SUNSET
+====================== -->
+
+<div class="highlights">
+
+<div class="highlight-card">
+<i class="fa-solid fa-sun"></i>
+<p>Sunrise</p>
+<h2>05:42 AM</h2>
+</div>
+
+<div class="highlight-card">
+<i class="fa-solid fa-moon"></i>
+<p>Sunset</p>
+<h2>06:38 PM</h2>
+</div>
+
+</div>
+
+<!-- ======================
+FARMER ADVISORY
+====================== -->
+
+<div class="advisory">
+
+<h2>
+🌾 Farmer Advisory
+</h2>
+
+<p>
+Rain is expected tomorrow. Consider delaying irrigation and protect harvested crops.
+</p>
+
+<ul>
+
+<li>✅ Rain probability: 72%</li>
+
+<li>✅ Best crop activity: Harvest planning</li>
+
+<li>✅ Irrigation recommendation: Delay 24 hours</li>
+
+<li>✅ Wind conditions favorable</li>
+
+<li>✅ Moderate humidity levels</li>
+
+</ul>
+
+</div>
+
+<!-- ======================
+FAVORITE CITIES
+====================== -->
+
+<div class="favorites">
+
+<h2 class="section-title">
+Favorite Cities
+</h2>
+
+<div class="favorite-list">
+
+<div class="favorite-city">
+Hyderabad
+</div>
+
+<div class="favorite-city">
+Vijayawada
+</div>
+
+<div class="favorite-city">
+Visakhapatnam
+</div>
+
+<div class="favorite-city">
+Mumbai
+</div>
+
+<div class="favorite-city">
+Delhi
+</div>
+
+</div>
+
+</div>
+
+<!-- ======================
+RECENT SEARCHES
+====================== -->
+
+<div class="favorites">
+
+<h2 class="section-title">
+Recent Searches
+</h2>
+
+<div class="favorite-list">
+
+<div class="favorite-city">
+Chennai
+</div>
+
+<div class="favorite-city">
+Bangalore
+</div>
+
+<div class="favorite-city">
+Pune
+</div>
+
+<div class="favorite-city">
+Kolkata
+</div>
+
+</div>
+
+</div>
+
+<div class="search-box">
+<input type="text" id="cityInput" placeholder="Search city...">
+<button id="searchBtn">
+Search
+</button>
+</div>
+
+<div class="main-weather">
+
+<div class="glass-card">
+
+<div class="current-weather">
+
+<div>
+
+<div class="temp" id="temperature">
+29°
+</div>
+
+<div class="city" id="cityName">
+Hyderabad
+</div>
+
+<div class="condition">
+Sunny Sky
+</div>
+
+</div>
+
+<div class="weather-icon">
+☀️
+</div>
+
+</div>
+
+</div>
+
+<div class="glass-card">
+
+<h3>Today's Summary</h3>
+
+<br>
+
+<p>Humidity: 68%</p>
+<p>Wind: 14 km/h</p>
+<p>AQI: Good</p>
+<p>UV: Moderate</p>
+
+</div>
+
+</div>
+
+<!-- More sections will be added in Part 2 -->
+
+</section>
+
+<div class="mobile-nav">
+<i class="fa-solid fa-house"></i>
+<i class="fa-solid fa-cloud"></i>
+<i class="fa-solid fa-heart"></i>
+<i class="fa-solid fa-user"></i>
+</div>
+
+<footer>
+WeatherSphere Pro © 2026
+</footer>
+<script>
+
+/* ==========================
+LOADER
+========================== */
+
+window.addEventListener("load",()=>{
+
+const loader=document.getElementById("loader");
+
+setTimeout(()=>{
+loader.style.display="none";
+},1200);
+
+});
+
+/* ==========================
+TOAST
+========================== */
+
+function showToast(message){
+
+const toast=document.getElementById("toast");
+
+toast.innerText=message;
+
+toast.style.display="block";
+
+setTimeout(()=>{
+toast.style.display="none";
+},2500);
+
+}
+
+/* ==========================
+DARK MODE
+========================== */
+
+const themeBtn=document.getElementById("themeBtn");
+
+if(localStorage.getItem("theme")==="light"){
+
+document.body.style.background=
+"linear-gradient(135deg,#f4f7fb,#dbeafe,#ffffff)";
+
+document.body.style.color="#111";
+
+}
+
+themeBtn.addEventListener("click",()=>{
+
+const current=localStorage.getItem("theme");
+
+if(current==="light"){
+
+localStorage.setItem("theme","dark");
+
+document.body.style.background=
+"linear-gradient(135deg,#0f172a,#111827,#1e293b)";
+
+document.body.style.color="white";
+
+showToast("Dark Mode Enabled");
+
+}else{
+
+localStorage.setItem("theme","light");
+
+document.body.style.background=
+"linear-gradient(135deg,#f4f7fb,#dbeafe,#ffffff)";
+
+document.body.style.color="#111";
+
+showToast("Light Mode Enabled");
+
+}
+
+});
+
+/* ==========================
+MOCK WEATHER DATA
+========================== */
+
+const weatherData={
+
+Hyderabad:{
+temp:"29°",
+condition:"Sunny"
+},
+
+Delhi:{
+temp:"34°",
+condition:"Hot"
+},
+
+Mumbai:{
+temp:"30°",
+condition:"Cloudy"
+},
+
+Chennai:{
+temp:"32°",
+condition:"Humid"
+},
+
+Bangalore:{
+temp:"26°",
+condition:"Pleasant"
+},
+
+Kolkata:{
+temp:"31°",
+condition:"Rainy"
+}
+
+};
+
+/* ==========================
+SEARCH
+========================== */
+
+const searchBtn=
+document.getElementById("searchBtn");
+
+const cityInput=
+document.getElementById("cityInput");
+
+searchBtn.addEventListener("click",()=>{
+
+const city=
+cityInput.value.trim();
+
+if(weatherData[city]){
+
+document.getElementById("cityName").innerText=
+city;
+
+document.getElementById("temperature").innerText=
+weatherData[city].temp;
+
+showToast(city+" loaded");
+
+saveRecent(city);
+
+}else{
+
+showToast("City not found");
+
+}
+
+});
+
+/* ==========================
+RECENT SEARCHES
+========================== */
+
+function saveRecent(city){
+
+let searches=
+JSON.parse(
+localStorage.getItem("recentCities")
+)||[];
+
+if(!searches.includes(city)){
+
+searches.unshift(city);
+
+}
+
+searches=searches.slice(0,5);
+
+localStorage.setItem(
+"recentCities",
+JSON.stringify(searches)
+);
+
+}
+
+/* ==========================
+FAVORITES
+========================== */
+
+let favorites=
+JSON.parse(
+localStorage.getItem("favorites")
+)||[];
+
+document
+.querySelectorAll(".favorite-city")
+.forEach(city=>{
+
+city.addEventListener("click",()=>{
+
+const name=city.innerText;
+
+if(!favorites.includes(name)){
+
+favorites.push(name);
+
+localStorage.setItem(
+"favorites",
+JSON.stringify(favorites)
+);
+
+showToast(name+" added to favorites");
+
+}else{
+
+showToast(name+" already saved");
+
+}
+
+});
+
+});
+
+/* ==========================
+SEARCH ENTER KEY
+========================== */
+
+cityInput.addEventListener("keyup",(e)=>{
+
+if(e.key==="Enter"){
+
+searchBtn.click();
+
+}
+
+});
+
+/* ==========================
+WEATHER THEMES
+========================== */
+
+function updateTheme(condition){
+
+if(condition==="Rainy"){
+
+document.body.style.background=
+"linear-gradient(135deg,#334155,#475569,#64748b)";
+
+}
+
+if(condition==="Sunny"){
+
+document.body.style.background=
+"linear-gradient(135deg,#2563eb,#0ea5e9,#38bdf8)";
+
+}
+
+if(condition==="Cloudy"){
+
+document.body.style.background=
+"linear-gradient(135deg,#64748b,#94a3b8,#cbd5e1)";
+
+}
+
+}
+
+/* ==========================
+FLOATING ANIMATION
+========================== */
+
+document
+.querySelectorAll(".glass-card")
+.forEach(card=>{
+
+card.addEventListener("mouseenter",()=>{
+
+card.style.transform=
+"translateY(-10px)";
+
+});
+
+card.addEventListener("mouseleave",()=>{
+
+card.style.transform=
+"translateY(0px)";
+
+});
+
+});
+
+/* ==========================
+WELCOME
+========================== */
+
+setTimeout(()=>{
+
+showToast(
+"Welcome to WeatherSphere Pro 🌦"
+);
+
+},1500);
+
+</script>
+</body>
+</html>
