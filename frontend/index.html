@@ -25,6 +25,8 @@
   <!-- ================= SECURITY ================= -->
 
 
+<!-- ================= SECURITY ================= -->
+
 <meta
   http-equiv="Content-Security-Policy"
   content="
@@ -33,12 +35,15 @@
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
     font-src 'self' https://fonts.gstatic.com data:;
     img-src 'self' data: blob: https:;
-    connect-src 'self'
-      https://mindcare-ai-3.onrender.com
-      https://api.anthropic.com;
+    connect-src
+      'self'
+      https:
+      wss:;
     frame-ancestors 'none';
   "
 />
+
+
 
 <meta http-equiv="X-Content-Type-Options" content="nosniff" />
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
