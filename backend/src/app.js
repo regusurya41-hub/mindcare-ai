@@ -13,6 +13,8 @@ import communityRoutes from "./routes/community.routes.js";
 import settingsRoutes from "./routes/settings.routes.js";
 import memoryRoutes from "./routes/memory.routes.js";
 
+
+
 import {
   errorHandler,
   notFound,
@@ -207,6 +209,7 @@ app.use(
   `${API_PREFIX}/memory`,
   memoryRoutes
 );
+
 
 /* ==========================================
    404 Handler

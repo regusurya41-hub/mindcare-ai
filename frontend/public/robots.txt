@@ -1,2 +1,7 @@
 User-agent: *
 Allow: /
+Allow: /login
+Allow: /signup
+Disallow: /app/
+
+Sitemap: https://mindcare-ai-frontend.vercel.app/sitemap.xml

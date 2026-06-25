@@ -6,7 +6,7 @@ import plugin from 'tailwindcss/plugin';
 export default {
   // 'media' is more robust than 'class' — respects OS preference automatically.
   // Switch back to 'class' only if you need a manual toggle button.
-  darkMode: 'media',
+  darkMode: 'class',
 
   content: [
     './index.html',

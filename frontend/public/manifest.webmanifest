@@ -1,16 +1,35 @@
 {
-  "name": "MindCare AI",
+  "name": "MindCare AI — Emotional Wellness",
   "short_name": "MindCare",
-  "description": "AI-powered emotional wellness platform",
+  "description": "Your private AI-powered emotional wellness companion — mood tracking, journaling, and calm tools.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#f7fbf9",
-  "theme_color": "#0f766e",
+  "orientation": "portrait-primary",
+  "theme_color": "#6366f1",
+  "background_color": "#070b17",
+  "lang": "en",
+  "categories": ["health", "lifestyle", "medical"],
   "icons": [
-    {
-      "src": "/icons/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml"
-    }
-  ]
+    { "src": "/icons/icon-72.png",   "sizes": "72x72",   "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-96.png",   "sizes": "96x96",   "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-128.png",  "sizes": "128x128", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-144.png",  "sizes": "144x144", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-152.png",  "sizes": "152x152", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-192.png",  "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icons/icon-384.png",  "sizes": "384x384", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png",  "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "screenshots": [
+    { "src": "/screenshots/dashboard.png", "sizes": "1280x720", "type": "image/png", "label": "Dashboard" },
+    { "src": "/screenshots/chat.png",      "sizes": "1280x720", "type": "image/png", "label": "AI Chat" }
+  ],
+  "shortcuts": [
+    { "name": "Open AI Chat",    "url": "/app/chat",    "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }] },
+    { "name": "Log Mood",        "url": "/app/moods",   "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }] },
+    { "name": "Open Journal",    "url": "/app/journal", "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }] },
+    { "name": "Calm Space",      "url": "/app/calm",    "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }] }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
 }
